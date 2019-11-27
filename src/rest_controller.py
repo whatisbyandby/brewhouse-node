@@ -7,7 +7,7 @@ step_cont = StepController()
 
 async def handle_request(request, response):
     if request.method == 'GET':
-        current_step = step_cont.get_step()
+        current_step = step_cont.get_steps()
         return response(json.dumps(current_step, cls=EnhancedJSONEncoder), mimetype="application/json")
     elif request.method == 'POST':
         data = await request.json
@@ -30,6 +30,7 @@ async def handle_request(request, response):
 async def handle_start_request(request, response):
     step_cont.start()
     return response('This is the response')
+
 
 async def handle_stop_request(request, response):
     print('Stop Request')
