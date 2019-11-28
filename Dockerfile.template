@@ -11,6 +11,7 @@ WORKDIR /usr/src/app
 
 # Copy requirements.txt first for better cache on later pushes
 COPY requirements.txt requirements.txt
+COPY .env .env
 
 RUN apt-get clean && apt-get update && apt-get install -yq \
 	build-essential libffi-dev libssl-dev \
