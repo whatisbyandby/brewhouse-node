@@ -3,9 +3,8 @@ from dotenv import load_dotenv
 from threading import Thread
 import time
 from datetime import datetime, timedelta
-from confluent_kafka import Producer
 from temp_reader import TempReader
-
+import requests
 
 load_dotenv()
 
@@ -20,12 +19,12 @@ class StepRunner:
         self.start = None
         self.end = None
         self.reader = TempReader()
-        self.producer = Producer({'bootstrap.servers': os.getenv('KAFKA_HOST') + ':' + os.getenv('KAFKA_PORT')})
 
     def set_step(self, step):
         self.step = step
 
     def run_step(self):
+        print(self.step_running)
         if self.step_running:
             return
         self.step_running = True
@@ -35,6 +34,7 @@ class StepRunner:
         self.step_thread.start()
 
     def loop(self):
+        print('loop')
         while self.step_running:
             current_time = datetime.now()
             if current_time > self.end:
@@ -48,7 +48,10 @@ class StepRunner:
                     'timestamp': datetime.now().isoformat(' '),
                     'time_remaining': int(round(self.remaining_time)),
                 }
-                self.producer.produce('simple_test', key=self.step.name, value=str(data))
+
+                # r = requests.post("http://localhost:3002", data)
+                print(data)
+
                 time.sleep(1)
         self.step_finished()
 

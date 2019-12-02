@@ -4,9 +4,8 @@ from dataclasses import dataclass
 class Step:
     name: str
     hold_time: float
-    hold_temp: float
-    rise_time: float
-    rise_temp: float
+    start_temp: float
+    end_temp: float
 
 
 

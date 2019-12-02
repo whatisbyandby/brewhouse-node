@@ -1,4 +1,5 @@
 from step_runner import StepRunner
+from test_utils import get_test_steps
 from step import Step
 
 
@@ -11,10 +12,12 @@ class StepController:
     def get_steps(self):
         return self.steps
 
-    def set_steps(self, step_data):
-        for step in step_data:
+    def set_steps(self, steps):
+        new_steps = []
+        for step in steps:
             new_step = Step(**step)
-            self.steps.append(new_step)
+            new_steps.append(new_step)
+        self.steps = new_steps
         return self.steps
 
     def update_step(self, new_step_data):
@@ -25,6 +28,7 @@ class StepController:
         return None
 
     def start(self):
+        print(self.steps)
         self.step_runner.set_step(self.steps[self.current_step])
         self.step_runner.run_step()
         print('Step ' + str(self.current_step) + ' Running')
@@ -40,4 +44,10 @@ class StepController:
     def stop(self):
         self.step_runner.stop_step()
         print('process stopped')
+
+
+if __name__ == '__main__':
+    test_controller = StepController()
+    test_controller.set_steps(get_test_steps())
+    
 
