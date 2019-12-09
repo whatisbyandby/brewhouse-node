@@ -1,4 +1,5 @@
 from threading import Thread
+import os
 import time
 from datetime import datetime, timedelta
 from temperature_controller import TemperatureController
@@ -28,7 +29,6 @@ class StepRunner:
         self.step_thread.start()
 
     def loop(self):
-        print('loop')
         while self.step_running:
             current_time = datetime.now()
             if current_time > self.end:
@@ -37,17 +37,15 @@ class StepRunner:
                 time_remaining = self.end - current_time
                 self.remaining_time = time_remaining.total_seconds()
                 temp_data = self.temp_controller.compare_temp()
-                print(temp_data)
                 data = {
                     'temp': temp_data,
                     'timestamp': datetime.now().isoformat(' '),
                     'time_remaining': int(round(self.remaining_time)),
                 }
                 try:
-                    requests.post('http://localhost:3001/fermentation', json=data)
-                except Exception as error:
-                    print(error)
-                    return
+                    requests.post(os.getenv('DATAHUB_URL') + '/fermentation', json=data)
+                except requests.RequestException as error:
+                    print('Unable to publish the data ' + str(error.args))
                 time.sleep(1)
         self.step_finished()
 

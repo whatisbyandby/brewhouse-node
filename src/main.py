@@ -8,7 +8,7 @@ app = Quart(__name__)
 load_dotenv()
 
 
-@app.route('/step', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@app.route('/step', methods=['GET', 'POST'])
 async def step():
     response = await rest_controller.handle_request(request, Response)
     return response

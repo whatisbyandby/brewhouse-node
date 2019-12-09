@@ -20,18 +20,13 @@ class StepController:
         self.steps = new_steps
         return self.steps
 
-    def update_step(self, new_step_data):
-        return self.current_step
-
-    def delete_step(self):
-        self.step_runner.delete_step()
-        return None
-
     def start(self):
-        print(self.steps)
-        self.step_runner.set_step(self.steps[self.current_step])
-        self.step_runner.run_step()
-        print('Step ' + str(self.current_step) + ' Running')
+        if len(self.steps) > 0:
+            self.step_runner.set_step(self.steps[self.current_step])
+            self.step_runner.run_step()
+            return True
+        else:
+            return False
 
     def next_step(self):
         self.current_step = self.current_step + 1
@@ -44,10 +39,3 @@ class StepController:
     def stop(self):
         self.step_runner.stop_step()
         print('process stopped')
-
-
-if __name__ == '__main__':
-    test_controller = StepController()
-    test_controller.set_steps(get_test_steps())
-    
-
