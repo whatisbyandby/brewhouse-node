@@ -1,4 +1,5 @@
 from kafka import KafkaConsumer
+import json
 # To consume latest messages and auto-commit offsets
 def consume():
     consumer = KafkaConsumer('simple_test',
@@ -6,7 +7,7 @@ def consume():
     for message in consumer:
         print ("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,
         message.offset, message.key,
-        message.value))
+        json.loads(message.value.decode('utf-8'))))
 
 
 if __name__ == '__main__':

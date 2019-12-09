@@ -1,12 +1,8 @@
-import os
-from dotenv import load_dotenv
 from threading import Thread
 import time
 from datetime import datetime, timedelta
-from temp_reader import TempReader
+from temperature_controller import TemperatureController
 import requests
-
-load_dotenv()
 
 
 class StepRunner:
@@ -18,19 +14,17 @@ class StepRunner:
         self.remaining_time = 0
         self.start = None
         self.end = None
-        self.reader = TempReader()
+        self.temp_controller = TemperatureController()
 
     def set_step(self, step):
         self.step = step
 
     def run_step(self):
-        print(self.step_running)
         if self.step_running:
             return
         self.step_running = True
         self.start = datetime.now()
         self.end = self.start + timedelta(minutes=self.step.hold_time)
-        print('Process end time', self.end)
         self.step_thread.start()
 
     def loop(self):
@@ -42,16 +36,18 @@ class StepRunner:
             else:
                 time_remaining = self.end - current_time
                 self.remaining_time = time_remaining.total_seconds()
-                new_readings = self.reader.get_all_readings()
+                temp_data = self.temp_controller.compare_temp()
+                print(temp_data)
                 data = {
-                    'temp_readings': new_readings,
+                    'temp': temp_data,
                     'timestamp': datetime.now().isoformat(' '),
                     'time_remaining': int(round(self.remaining_time)),
                 }
-
-                # r = requests.post("http://localhost:3002", data)
-                print(data)
-
+                try:
+                    requests.post('http://localhost:3001/fermentation', json=data)
+                except Exception as error:
+                    print(error)
+                    return
                 time.sleep(1)
         self.step_finished()
 
