@@ -1,6 +1,5 @@
 from temp_reader import TempReader
 from temp_controller_status import TempControllerStatus
-import time
 
 
 class TemperatureController:

@@ -19,6 +19,7 @@ class StepRunner:
 
     def set_step(self, step):
         self.step = step
+        self.temp_controller.set_target_temp(self.step.start_temp)
 
     def run_step(self):
         if self.step_running:

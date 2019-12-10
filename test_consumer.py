@@ -2,7 +2,7 @@ from kafka import KafkaConsumer
 import json
 # To consume latest messages and auto-commit offsets
 def consume():
-    consumer = KafkaConsumer('simple_test',
+    consumer = KafkaConsumer('fermentation',
         bootstrap_servers=['192.168.0.28:9092'])
     for message in consumer:
         print ("%s:%d:%d: key=%s value=%s" % (message.topic, message.partition,
